@@ -50,6 +50,16 @@
     {{/if}}
 
     <div class="info">
+      {{#if content.isDirects}}
+        <span>
+          »
+        </span>
+      {{else}}
+        {{#if content.isPrivates}}
+          <i class="fa fa-lock"></i>
+        {{/if}}
+      {{/if}}
+
       <span class="post-date">
         {{#link-to 'post' content.postedToFirstObject content.id (query-params offset=0) class="datetime"}}<time datetime="{{createdAtISO}}" title="{{createdAtISO}}">{{createdAgo}}</time>{{/link-to}}
       </span>
@@ -96,6 +106,9 @@
               </div>
               <div class="p-timeline-comment-actions">
                 <button {{action 'create'}} class="btn btn-default btn-xs p-timeline-comment-post">Comment</button>
+                {{#if controller.isSending}}
+                  <span class="throbber"><img src="/img/throbber-16.gif" width="16" height="16" /></span>
+                {{/if}}
               </div>
             </div>
           </div>

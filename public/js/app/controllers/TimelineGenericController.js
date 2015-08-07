@@ -2,13 +2,15 @@ define(["config",
         "app/app",
         "ember",
         "lodash",
-        "mixins/Pagination"], function(config, App, Ember, _) {
+        "mixins/Pagination",
+        "controllers/ApplicationController"], function(config, App, Ember, _) {
   "use strict";
 
   // "Abstract" generic controller for timelines
-  App.TimelineGenericController = Ember.Controller.extend(App.Pagination, {
+  App.TimelineGenericController = App.ApplicationController.extend(App.Pagination, {
     selectFeedsOnCreate: true,
     attachFilesOnCreate: true,
+    isSending: false,
 
     title: function() {
       return ''
@@ -52,7 +54,7 @@ define(["config",
     }.property('model.user.id', 'session.currentUser.banIds.[]'),
 
     isAdmin: function() {
-      var adminIds = this.get('model.user.administratorIds')
+      var adminIds = _.map(this.get('model.user.administrators').toArray(), 'id')
       var currentUserId = this.get('session.currentUser.id')
 
       return adminIds && adminIds.indexOf(currentUserId) !== -1
@@ -158,19 +160,21 @@ define(["config",
           })
         post.get('attachments').pushObjects(attachmentList)
 
-        // Clear the form
-        this.set('body', '')
-        this.set('attachments', [])
-        this.set('isAttachmentsVisible', false)
-        this.set('isSendToVisible', false)
+        this.set('isSending', true)
 
         // Save it to the backend
-        var that = this
         post.save()
           .then(function(post) {
-            var object = that.get('model.posts').findProperty('id', post.get('id'))
+            // Clear the form
+            this.set('body', '')
+            this.set('attachments', [])
+            this.set('isAttachmentsVisible', false)
+            this.set('isSendToVisible', false)
+            this.set('isSending', false)
+
+            var object = this.get('model.posts').findProperty('id', post.get('id'))
             if (!object) {
-              that.get('model.posts').unshiftObject(post)
+              this.get('model.posts').unshiftObject(post)
             } else {
               post.get('attachments.canonicalState').forEach(function(attachment) {
                 if (attachment) {
@@ -181,7 +185,27 @@ define(["config",
                 }
               })
             }
-          })
+          }.bind(this))
+          .catch(function(e) {
+            this.set('isSending', false)
+
+            if (e.responseJSON.err == 'Maximum post-length is 1500 graphemes') {
+              // showing user-friendly text
+              this.displayMessage("Posts longer than 1500 symbols are not allowed");
+            } else {
+              this.displayError(e.statusText)
+            }
+          }.bind(this))
+      },
+
+      sendRequest: function() {
+        var user = this.get('model.user')
+        var currentUser = this.get('session.currentUser')
+
+        currentUser.sendRequest(user)
+          .then(function() {
+            this.displayMessage('Subscription request has been sent.')
+          }.bind(this))
       },
 
       ban: function() {
