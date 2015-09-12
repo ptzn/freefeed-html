@@ -64,14 +64,9 @@ define(["config",
       return this.get('attachments').isAny('id', null)
     }.property('attachments.[]'),
 
-    isAttachmentsVisible: false,
     isSendToVisible: false,
 
     actions: {
-      showAttachments: function() {
-        this.toggleProperty('isAttachmentsVisible')
-      },
-
       subscribe: function() {
         var user = this.get('model.user')
         Ember.$.ajax({
@@ -122,7 +117,7 @@ define(["config",
 
         // Add a throbber (placeholder object, to show uploading progress)
         var attachmentList = this.get('attachments')
-        var throbber = this.store.createRecord('attachment', { thumbnailUrl: '/img/throbber-100.gif' })
+        var throbber = this.store.createRecord('attachment', { fileName: file.name })
         var throbberIndex = attachmentList.length
         attachmentList.pushObject(throbber)
 
@@ -133,7 +128,7 @@ define(["config",
             attachmentList.replace(throbberIndex, 1, [ attachment ])
           })
           .catch(function(e) {
-            console.log('upload failed')
+            console.log('Upload failed.')
             attachmentList.removeAt(throbberIndex, 1)
           })
       },
@@ -168,7 +163,6 @@ define(["config",
             // Clear the form
             this.set('body', '')
             this.set('attachments', [])
-            this.set('isAttachmentsVisible', false)
             this.set('isSendToVisible', false)
             this.set('isSending', false)
 
