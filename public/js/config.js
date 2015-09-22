@@ -1,7 +1,15 @@
 "use strict";
 
 define({
+  siteName: 'Pepyatka',
+
   host: "http://localhost:3000",
+
+  auth: {
+    cookieDomain: 'localhost',
+    tokenPrefix: 'test_'
+  },
+
   waitSeconds: 0,
 
   shim: {

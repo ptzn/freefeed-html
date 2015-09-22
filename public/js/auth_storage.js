@@ -1,71 +1,90 @@
 "use strict"
 
-define({
-  _isLocalStorageSupported: null,
-  checkIfLocalStorageSupported: function() {
-    var supported = ('localStorage' in window && window.localStorage !== null)
+define(["config"], function(config) {
+  return {
+    _isLocalStorageSupported: null,
 
-    if (!supported) {
-      return false
-    }
+    checkIfLocalStorageSupported: function() {
+      var supported = ('localStorage' in window && window.localStorage !== null)
 
-    var testKey = 'test'
+      if (!supported) {
+        return false
+      }
 
-    try {
-      window.localStorage.setItem(testKey, '1')
-      window.localStorage.removeItem(testKey)
+      var testKey = 'test'
 
-      return true
-    } catch (error) {
-      return false
-    }
-  },
-  isLocalStorageSupported: function(){
-    if (this._isLocalStorageSupported === null) {
-      this._isLocalStorageSupported = this.checkIfLocalStorageSupported()
-    }
+      try {
+        window.localStorage.setItem(testKey, '1')
+        window.localStorage.removeItem(testKey)
 
-    return this._isLocalStorageSupported
-  },
+        return true
+      } catch (error) {
+        return false
+      }
+    },
 
-  getCookie: function(cname) {
-    var name = cname + "="
-    var ca = document.cookie.split(';')
+    isLocalStorageSupported: function() {
+      if (this._isLocalStorageSupported === null) {
+        this._isLocalStorageSupported = this.checkIfLocalStorageSupported()
+      }
 
-    for (var i=0; i<ca.length; i++) {
-      var c = ca[i]
+      return this._isLocalStorageSupported
+    },
 
-      while (c.charAt(0)==' ')
-        c = c.substring(1);
+    getCookie: function(cname) {
+      var name = cname + "="
+      var ca = document.cookie.split(';')
 
-      if (c.indexOf(name) == 0)
-        return c.substring(name.length,c.length);
-    }
+      for (var i=0; i<ca.length; i++) {
+        var c = ca[i]
 
-    return "";
-  },
-  setCookie: function(cname, cvalue, exdays) {
-    var d = new Date()
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000))
+        while (c.charAt(0)==' ')
+          c = c.substring(1);
 
-    var expires = "expires=" + d.toUTCString()
+        if (c.indexOf(name) == 0)
+          return c.substring(name.length,c.length);
+      }
 
-    document.cookie = cname + "=" + cvalue + "; " + expires
-  },
+      return '';
+    },
 
-  getStoredToken: function () {
-    if (this.isLocalStorageSupported()) {
-      return window.localStorage.getItem('authToken')
-    } else {
-      return this.getCookie('authToken')
-    }
-  },
+    setCookie: function(cname, cvalue, exdays, cdomain, path) {
+      var d = new Date()
+      d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000))
 
-  storeToken: function(token) {
-    if (this.isLocalStorageSupported()) {
-      window.localStorage.setItem('authToken', token)
-    } else {
-      this.setCookie('authToken', token, 365)
+      var cookie = cname + '=' + cvalue + '; '
+      + 'expires=' + d.toUTCString() + '; '
+      + 'domain=' + cdomain + '; '
+      + ((path != undefined) ? ('path=' + path + '; '):'')
+
+      document.cookie = cookie
+    },
+
+    getStoredToken: function () {
+      var token;
+
+      // Migrate token from localStorage to cookie
+      // (we'll leave this in prod for a couple of weeks until everyone seamlessly have a cookie)
+      if (this.isLocalStorageSupported()) {
+        token = window.localStorage.getItem('authToken')
+        window.localStorage.removeItem('authToken')
+      }
+      if (token) {
+        this.storeToken(token)
+        return token
+      } else {
+        return this.getCookie(config.auth.tokenPrefix + 'authToken')
+      }
+    },
+
+    storeToken: function(token) {
+      this.setCookie(
+        config.auth.tokenPrefix + 'authToken',
+        token,
+        365,
+        config.auth.cookieDomain,
+        '/'
+      )
     }
   }
 })
