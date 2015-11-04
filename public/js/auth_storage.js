@@ -90,7 +90,7 @@ define(["config"], function(config) {
     getWhoamiCache: function() {
       if (this.isLocalStorageSupported()) {
         var data = window.localStorage.getItem('whoamiCache')
-        if (data) {
+        if (data && data.hasOwnProperty('users')) {
           return JSON.parse(data)
         }
       }
