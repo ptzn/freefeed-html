@@ -244,5 +244,68 @@
     &:hover span {
       text-decoration: underline;
     }
+
+    span.for-dropzone {
+      display: none;
+    }
+  }
+}
+
+.create-attachment-container.dropzone {
+  z-index: 1000;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+
+  background-color: #fff;
+  opacity: 0.95;
+
+  .create-attachment {
+    z-index: 1001;
+    position: fixed;
+    left: 25%;
+    top: 25%;
+    width: 50%;
+    height: 50%;
+
+    color: #666;
+    font-size: 20px;
+    text-align: center;
+    border: 5px dashed #ccc;
+    background-color: #eee;
+    padding-top: 50px;
+    overflow: hidden;
+    opacity: 1;
+
+    &.hover {
+      color: #000;
+      border-color: #888;
+      background-color: #ccc;
+    }
+
+    input[type="file"] {
+      z-index: 1002;
+      position: absolute;
+      top: 0;
+      font-size: 500px;
+      opacity: 0;
+    }
+
+    &:hover span {
+      text-decoration: none;
+    }
+
+    span.for-inline {
+      display: none;
+    }
+    span.for-dropzone {
+      display: inline;
+    }
+  }
+
+  &.visible {
+    display: block;
   }
 }
