@@ -11,7 +11,22 @@ define(["app/app",
     addDragnDropHandlers: function() {
       var that = this
 
+      var containsFiles = function(event) {
+        if (event.dataTransfer.types) {
+          for (var i = 0; i < event.dataTransfer.types.length; i++) {
+            if (event.dataTransfer.types[i] === 'Files') {
+              return true
+            }
+          }
+        }
+        return false
+      }
+
       Ember.$(window).on('dragenter.dragndropfiles', function(event) {
+        if (!containsFiles(event)) {
+          return true
+        }
+
         that.inDropzoneOverlay = true
         Ember.$('.create-attachment-container').addClass('dropzone')
 
@@ -47,6 +62,10 @@ define(["app/app",
       })
 
       Ember.$('.create-attachment-container').on('dragover.dragndropfiles', function(event) {
+        if (!containsFiles(event)) {
+          return true
+        }
+
         event.preventDefault()
         that.inDropzoneOverlay = true
       })
