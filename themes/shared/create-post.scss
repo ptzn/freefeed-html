@@ -259,25 +259,17 @@
   width: 100%;
   height: 100%;
 
-  background-color: #fff;
-  opacity: 0.95;
-
   .create-attachment {
     z-index: 1001;
-    position: fixed;
-    left: 25%;
-    top: 25%;
-    width: 50%;
-    height: 50%;
+    position: absolute;
 
     color: #666;
     font-size: 20px;
     text-align: center;
     border: 5px dashed #ccc;
     background-color: #eee;
-    padding-top: 50px;
     overflow: hidden;
-    opacity: 1;
+    opacity: 0.9;
 
     &.hover {
       color: #000;
@@ -301,7 +293,7 @@
       display: none;
     }
     span.for-dropzone {
-      display: inline;
+      display: block;
     }
   }
 

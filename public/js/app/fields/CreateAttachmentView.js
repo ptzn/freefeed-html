@@ -22,13 +22,42 @@ define(["app/app",
         return false
       }
 
+      var showDropZone = function() {
+        var c = Ember.$('.create-attachment-container')
+        var dropzone = c.find('.create-attachment')
+        var form = c.closest('.create-post')
+        var bodyGetter = Ember.$(window)
+
+        c.addClass('dropzone');
+        dropzone.css({
+          left: form.offset().left,
+          top: form.offset().top - bodyGetter.scrollTop(),
+          width: form.width(),
+          height: form.height(),
+          paddingTop: form.height() / 2 - 32
+        })
+      }
+
+      var hideDropZone = function() {
+        var c = Ember.$('.create-attachment-container')
+        var dropzone = c.find('.create-attachment')
+        c.removeClass('dropzone');
+        dropzone.css({
+          left: '',
+          top: '',
+          width: '',
+          height: '',
+          paddingTop: ''
+        })
+      }
+
       Ember.$(window).on('dragenter.dragndropfiles', function(event) {
         if (!containsFiles(event)) {
           return true
         }
 
         that.inDropzoneOverlay = true
-        Ember.$('.create-attachment-container').addClass('dropzone')
+        showDropZone()
 
         // Highlight dropzone when the draggable element enters it
         if (Ember.$(event.target).hasClass('create-attachment') ||
@@ -47,7 +76,7 @@ define(["app/app",
           // it means it was just moving between the overlay and actual dropzone.
           // Otherwise, it's really a leaving and we have to hide the overlay now.
           if (!that.inDropzoneOverlay) {
-            Ember.$('.create-attachment-container').removeClass('dropzone')
+            hideDropZone()
           }
         }, 200)
 
@@ -79,7 +108,7 @@ define(["app/app",
       Ember.$('.create-attachment-container').on('drop.dragndropfiles', function(event) {
         that.inDropzoneOverlay = false
         that.inActualDropzone = false
-        Ember.$('.create-attachment-container').removeClass('dropzone')
+        hideDropZone()
 
         // If it's not <input type=file>, prevent default drop action
         if (!Ember.$(event.target).hasClass('create-attachment-input')) {
