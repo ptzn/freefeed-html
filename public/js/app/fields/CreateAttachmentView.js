@@ -25,7 +25,7 @@ define(["app/app",
       var showDropZone = function() {
         var c = Ember.$('.create-attachment-container')
         var dropzone = c.find('.create-attachment')
-        var form = c.closest('.create-post')
+        var form = c.closest('.create-post, .edit-area')
         var bodyGetter = Ember.$(window)
 
         c.addClass('dropzone');
