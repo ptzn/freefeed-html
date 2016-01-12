@@ -92,7 +92,17 @@
       <span class="post-controls">
         {{#if controller.session.signedIn}}
           -
-          <a {{action 'focusCommentForm' target=view}} class="p-post-comment">Comment</a>
+          {{#if model.commentsDisabled}}
+            {{#if view.isOwner}}
+              <i>Comments disabled (not for you)</i>
+              -
+              <a {{action 'focusCommentForm' target=view}} class="p-post-comment">Comment</a>
+            {{else}}
+              <i>Comments disabled</i>
+            {{/if}}
+          {{else}}
+            <a {{action 'focusCommentForm' target=view}} class="p-post-comment">Comment</a>
+          {{/if}}
           -
           {{#if isLiked}}
             <span><a {{action 'unlike'}} class="p-post-unlike">Un-like</a></span>
@@ -123,25 +133,27 @@
         {{view "post-comment" content=comment}}
       {{/each}}
 
-      {{#if controller.session.signedIn}}
-        <div class="comment p-timeline-comment">
-          <a class="date">
-            <i class="fa fa-comment-o icon"></i>
-          </a>
-          <div class="body">
-            <div class="edit p-timeline-edit-comment">
-              <div class="p-timeline-comment-create">
-                {{view 'create-comment'}}
-              </div>
-              <div class="p-timeline-comment-actions">
-                <button {{action 'create'}} class="btn btn-default btn-xs p-timeline-comment-post">Comment</button>
-                {{#if controller.isSendingComment}}
-                  <span class="throbber"><img src="/img/throbber-16.gif" width="16" height="16" /></span>
-                {{/if}}
+      {{#if controller.canAddComment}}
+        {{#if controller.session.signedIn}}
+          <div class="comment p-timeline-comment">
+            <a class="date">
+              <i class="fa fa-comment-o icon"></i>
+            </a>
+            <div class="body">
+              <div class="edit p-timeline-edit-comment">
+                <div class="p-timeline-comment-create">
+                  {{view 'create-comment'}}
+                </div>
+                <div class="p-timeline-comment-actions">
+                  <button {{action 'create'}} class="btn btn-default btn-xs p-timeline-comment-post">Comment</button>
+                  {{#if controller.isSendingComment}}
+                    <span class="throbber"><img src="/img/throbber-16.gif" width="16" height="16" /></span>
+                  {{/if}}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        {{/if}}
       {{/if}}
     </div>
   </div>

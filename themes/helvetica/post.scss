@@ -240,6 +240,10 @@
     &:hover span {
       text-decoration: underline;
     }
+
+    span.for-dropzone {
+      display: none;
+    }
   }
 
   .attachments {
