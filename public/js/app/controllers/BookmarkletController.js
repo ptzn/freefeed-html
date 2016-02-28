@@ -18,7 +18,10 @@ define(["config",
         var data = {
           title: Ember.$('#bookmarklet-title').val(),
           image: Ember.$('#bookmarklet-image-url').val(),
-          comment: Ember.$('#bookmarklet-comment').val()
+          comment: Ember.$('#bookmarklet-comment').val(),
+          meta: {
+            feeds: Ember.$('#bookmarklet-recipients').val()
+          }
         }
 
         Ember.$.ajax({
