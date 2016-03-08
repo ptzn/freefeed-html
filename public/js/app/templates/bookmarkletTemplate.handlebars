@@ -77,7 +77,6 @@
     text-decoration: underline;
   }
   .select2-container {
-    width: 100%;
     line-height: 140%;
   }
 </style>
@@ -85,12 +84,12 @@
 {{#if controller.isSent}}
 
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-xs-12">
       <h1>Done!</h1>
     </div>
   </div>
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-xs-12">
       <div class="brand-new-post">
         Check out<br/>
         <a href="/{{controller.postData.users.0.username}}/{{controller.postData.posts.id}}" target="_top">
@@ -103,12 +102,12 @@
 {{else}}
 
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-xs-12">
       <h1>Share on FreeFeed</h1>
     </div>
   </div>
   <div class="row">
-    <div class="col-md-12 select2-container">
+    <div class="col-xs-12">
       <label for="bookmarklet-recipients">To:</label><br/>
       <select id="bookmarklet-recipients" multiple="multiple" class="p-recipients-select">
         <option selected="selected" value="{{controller.session.currentUser.username}}" class="p-recipients-selected">My feed</option>
@@ -119,24 +118,24 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-xs-12">
       <label for="bookmarklet-title">Title:</label><br/>
       <textarea id="bookmarklet-title" name="title">{{controller.title}}</textarea>
     </div>
   </div>
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-xs-12">
       <div id="bookmarklet-image" class="no-image">No image<br/> selected</div>
     </div>
   </div>
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-xs-12">
       <label for="bookmarklet-comment">Comment (optional)</label><br/>
       <textarea id="bookmarklet-comment" name="comment">{{controller.comment}}</textarea>
     </div>
   </div>
   <div class="row">
-    <div class="col-md-12 text-right">
+    <div class="col-xs-offset-6 col-xs-6 text-right">
       {{#if controller.isSending}}
         <span class="throbber"><img src="/img/throbber-16.gif" width="16" height="16" /></span>
       {{/if}}
